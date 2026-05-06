@@ -229,7 +229,7 @@ export default function Home() {
 
           <p className="flex items-center gap-1.5 text-[11px] text-muted-foreground mb-5">
             <MapPin size={11} className="shrink-0" />
-            Philippines, Remote-Ready
+            Iloilo City, Philippines
           </p>
 
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-[11px] font-medium mb-10 w-fit">
