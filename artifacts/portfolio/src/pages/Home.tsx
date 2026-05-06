@@ -211,11 +211,11 @@ export default function Home() {
         {/* ── SIDEBAR ── */}
         <aside className="hidden md:flex w-64 xl:w-72 shrink-0 flex-col sticky top-0 h-screen py-14 pl-8 pr-6 border-r border-border overflow-y-auto">
 
-          <div className="mb-7">
+          <div className="mb-7 flex justify-center">
             <img
               src={jpPhoto}
               alt="Jefferson Perolino"
-              className="w-24 h-24 rounded-full object-cover object-top border border-border shadow-sm"
+              className="w-32 h-32 rounded-full object-cover object-top border border-border shadow-sm"
             />
           </div>
 
