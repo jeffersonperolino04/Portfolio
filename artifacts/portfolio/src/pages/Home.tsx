@@ -155,14 +155,48 @@ export default function Home() {
     defaultValues: { name: "", email: "", subject: "", message: "" },
   });
 
-  function onSubmit(_values: z.infer<typeof contactFormSchema>) {
-    setTimeout(() => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  async function onSubmit(values: z.infer<typeof contactFormSchema>) {
+    const endpoint = import.meta.env.VITE_FORMSPREE_ENDPOINT;
+    if (!endpoint) {
       toast({
-        title: "Message sent!",
-        description: "I'll get back to you within 24 hours.",
+        title: "Configuration error",
+        description: "Contact form is not yet configured. Please try reaching out directly by email.",
+        variant: "destructive",
       });
-      form.reset();
-    }, 800);
+      return;
+    }
+    setIsSubmitting(true);
+    try {
+      const res = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({
+          name: values.name,
+          email: values.email,
+          subject: values.subject,
+          message: values.message,
+        }),
+      });
+      if (res.ok) {
+        toast({
+          title: "Message sent!",
+          description: "I'll get back to you within 24 hours.",
+        });
+        form.reset();
+      } else {
+        throw new Error("Submission failed");
+      }
+    } catch {
+      toast({
+        title: "Something went wrong",
+        description: "Your message couldn't be sent. Please email me directly at jeffersonperolino@gmail.com.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   const copyEmail = () => {
@@ -626,10 +660,11 @@ export default function Home() {
                     <Button
                       type="submit"
                       size="sm"
+                      disabled={isSubmitting}
                       className="rounded-full shadow-none font-medium px-6 text-xs"
                       data-testid="button-submit"
                     >
-                      Send Message
+                      {isSubmitting ? "Sending…" : "Send Message"}
                     </Button>
                   </form>
                 </Form>
