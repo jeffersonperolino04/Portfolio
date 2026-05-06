@@ -44,7 +44,6 @@ const NAV_LINKS = [
   { name: "Services", href: "#services" },
   { name: "Skills", href: "#skills" },
   { name: "Samples", href: "#samples" },
-  { name: "Testimonials", href: "#testimonials" },
   { name: "Contact", href: "#contact" },
 ];
 
@@ -437,47 +436,6 @@ export default function Home() {
                           <ArrowRight className="w-4 h-4 group-hover/link:translate-x-1 transition-transform" />
                         </a>
                       </Button>
-                    </div>
-                  </div>
-                </FadeIn>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Testimonials Section */}
-        <section id="testimonials" className="py-24 bg-primary text-primary-foreground">
-          <div className="container mx-auto px-6 md:px-12">
-            <FadeIn className="text-center mb-16">
-              <h2 className="text-3xl md:text-4xl font-serif mb-6 text-primary-foreground">Client Feedback</h2>
-              <p className="text-lg text-primary-foreground/70 max-w-2xl mx-auto">What professionals say about working with me.</p>
-            </FadeIn>
-
-            <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-              {[
-                {
-                  quote: "Jefferson is incredibly reliable and thorough. He handled our monthly bookkeeping flawlessly and even caught errors we missed. Highly recommend.",
-                  author: "Sarah M.",
-                  role: "Business Owner"
-                },
-                {
-                  quote: "His writing quality is exceptional. Every document he delivered was professional, well-structured, and ready to send. Will definitely hire again.",
-                  author: "Marcus T.",
-                  role: "Marketing Director"
-                },
-                {
-                  quote: "Working with Jefferson has been seamless. He communicates clearly, delivers on time, and always goes the extra mile. A true professional.",
-                  author: "Aina R.",
-                  role: "Startup Founder"
-                }
-              ].map((t, i) => (
-                <FadeIn key={i} delay={i * 0.1}>
-                  <div className="p-8 rounded-2xl bg-background/5 border border-primary-foreground/10 h-full flex flex-col backdrop-blur-sm">
-                    <div className="text-secondary text-lg mb-6 tracking-widest">★★★★★</div>
-                    <p className="text-lg leading-relaxed mb-8 flex-1 text-primary-foreground/90 font-serif italic">"{t.quote}"</p>
-                    <div>
-                      <div className="font-semibold text-primary-foreground">{t.author}</div>
-                      <div className="text-sm text-primary-foreground/60">{t.role}</div>
                     </div>
                   </div>
                 </FadeIn>
