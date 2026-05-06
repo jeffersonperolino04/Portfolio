@@ -1,21 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { motion, useAnimation, useInView } from "framer-motion";
-import { Link } from "wouter";
+import { motion, useInView } from "framer-motion";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { 
-  Calculator, 
-  PenTool, 
-  CalendarDays, 
+import {
+  Calculator,
+  PenTool,
+  CalendarDays,
   Search,
-  Mail,
   Linkedin,
+  Mail,
   MapPin,
+  Copy,
   ArrowRight,
-  Menu,
-  X,
-  Copy
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
@@ -29,8 +26,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import jpPhoto from "@assets/Untitled_design_20260116_074411_0000_1778062459401.jpg";
 
-// Form Schema
 const contactFormSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters."),
   email: z.string().email("Please enter a valid email address."),
@@ -38,7 +35,6 @@ const contactFormSchema = z.object({
   message: z.string().min(10, "Message must be at least 10 characters."),
 });
 
-// Navigation links
 const NAV_LINKS = [
   { name: "About", href: "#about" },
   { name: "Services", href: "#services" },
@@ -47,15 +43,30 @@ const NAV_LINKS = [
   { name: "Contact", href: "#contact" },
 ];
 
-const FadeIn = ({ children, delay = 0, className = "" }: { children: React.ReactNode, delay?: number, className?: string }) => {
+const TYPEWRITER_WORDS = [
+  "Financial Manager",
+  "Professional Writer",
+  "Virtual Assistant",
+  "Detail Orientated",
+];
+
+const FadeIn = ({
+  children,
+  delay = 0,
+  className = "",
+}: {
+  children: React.ReactNode;
+  delay?: number;
+  className?: string;
+}) => {
   const ref = React.useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const isInView = useInView(ref, { once: true, margin: "-80px" });
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, y: 20 }}
-      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-      transition={{ duration: 0.6, delay, ease: "easeOut" }}
+      initial={{ opacity: 0, y: 14 }}
+      animate={isInView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.55, delay, ease: "easeOut" }}
       className={className}
     >
       {children}
@@ -63,315 +74,332 @@ const FadeIn = ({ children, delay = 0, className = "" }: { children: React.React
   );
 };
 
-const TypewriterText = ({ words }: { words: string[] }) => {
+const TypewriterText = () => {
   const [index, setIndex] = useState(0);
   const [subIndex, setSubIndex] = useState(0);
   const [reverse, setReverse] = useState(false);
-  const [isTyping, setIsTyping] = useState(true);
+  const [blink, setBlink] = useState(true);
 
   useEffect(() => {
-    if (!isTyping) {
-      const timer = setTimeout(() => {
-        setIsTyping(true);
-        setReverse(true);
-      }, 2000); // pause at the end of word
-      return () => clearTimeout(timer);
+    if (subIndex === TYPEWRITER_WORDS[index].length + 1 && !reverse) {
+      const t = setTimeout(() => setReverse(true), 1800);
+      return () => clearTimeout(t);
     }
-
-    if (subIndex === words[index].length + 1 && !reverse) {
-      setIsTyping(false);
-      return;
-    }
-
     if (subIndex === 0 && reverse) {
       setReverse(false);
-      setIndex((prev) => (prev + 1) % words.length);
+      setIndex((p) => (p + 1) % TYPEWRITER_WORDS.length);
       return;
     }
+    const t = setTimeout(
+      () => setSubIndex((p) => p + (reverse ? -1 : 1)),
+      reverse ? 45 : 130
+    );
+    return () => clearTimeout(t);
+  }, [subIndex, index, reverse]);
 
-    const timeout = setTimeout(() => {
-      setSubIndex((prev) => prev + (reverse ? -1 : 1));
-    }, reverse ? 50 : 150);
-
-    return () => clearTimeout(timeout);
-  }, [subIndex, index, reverse, isTyping, words]);
+  useEffect(() => {
+    const t = setInterval(() => setBlink((p) => !p), 530);
+    return () => clearInterval(t);
+  }, []);
 
   return (
-    <span className="inline-block min-w-[20ch]">
-      {words[index].substring(0, subIndex)}
-      <span className="animate-pulse">|</span>
+    <span>
+      {TYPEWRITER_WORDS[index].substring(0, subIndex)}
+      <span
+        style={{ opacity: blink ? 1 : 0 }}
+        className="transition-opacity duration-75"
+      >
+        |
+      </span>
     </span>
   );
 };
 
+function SectionLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="flex items-center gap-4 mb-8">
+      <span className="text-[10.5px] font-medium uppercase tracking-[0.15em] text-muted-foreground shrink-0">
+        {children}
+      </span>
+      <div className="h-px bg-border flex-1" />
+    </div>
+  );
+}
+
 export default function Home() {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState("");
+  const [activeSection, setActiveSection] = useState("about");
   const { toast } = useToast();
 
   useEffect(() => {
+    const sections = NAV_LINKS.map((l) => l.href.slice(1));
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-      
-      const sections = NAV_LINKS.map(link => link.href.substring(1));
-      let current = "";
-      for (const section of sections) {
-        const element = document.getElementById(section);
-        if (element && window.scrollY >= element.offsetTop - 200) {
-          current = section;
-        }
+      let current = "about";
+      for (const id of sections) {
+        const el = document.getElementById(id);
+        if (el && window.scrollY >= el.offsetTop - 180) current = id;
       }
       setActiveSection(current);
     };
-
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const scrollTo = (e: React.MouseEvent, href: string) => {
+    e.preventDefault();
+    const el = document.querySelector(href);
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
   const form = useForm<z.infer<typeof contactFormSchema>>({
     resolver: zodResolver(contactFormSchema),
-    defaultValues: {
-      name: "",
-      email: "",
-      subject: "",
-      message: "",
-    },
+    defaultValues: { name: "", email: "", subject: "", message: "" },
   });
 
-  function onSubmit(values: z.infer<typeof contactFormSchema>) {
+  function onSubmit(_values: z.infer<typeof contactFormSchema>) {
     setTimeout(() => {
       toast({
         title: "Message sent!",
-        description: "Your message has been sent! I'll get back to you within 24 hours.",
+        description: "I'll get back to you within 24 hours.",
       });
       form.reset();
-    }, 1000);
+    }, 800);
   }
 
   const copyEmail = () => {
     navigator.clipboard.writeText("jeffersonperolino@gmail.com");
-    toast({
-      title: "Copied!",
-      description: "Email address copied to clipboard.",
-    });
-  };
-
-  const scrollTo = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    e.preventDefault();
-    const target = document.querySelector(href);
-    if (target) {
-      window.scrollTo({
-        top: (target as HTMLElement).offsetTop - 80,
-        behavior: "smooth"
-      });
-      setMobileMenuOpen(false);
-    }
+    toast({ title: "Copied!", description: "Email address copied to clipboard." });
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground font-sans selection:bg-primary/20 selection:text-primary">
-      {/* Navigation */}
-      <header 
-        className={`fixed top-0 w-full z-50 transition-all duration-300 border-b border-transparent ${
-          isScrolled ? "bg-background/80 backdrop-blur-md border-border shadow-sm py-4" : "bg-transparent py-6"
-        }`}
-      >
-        <div className="container mx-auto px-6 md:px-12 flex items-center justify-between">
-          <a href="#" onClick={(e) => scrollTo(e, "#top")} className="text-xl font-serif italic tracking-wide text-foreground hover:opacity-80 transition-opacity">
-            JP.
-          </a>
+    <div className="min-h-screen bg-background text-foreground">
+      <div className="max-w-5xl mx-auto flex min-h-screen">
 
-          {/* Desktop Nav */}
-          <nav className="hidden md:flex items-center gap-8">
+        {/* ── SIDEBAR ── */}
+        <aside className="hidden md:flex w-64 xl:w-72 shrink-0 flex-col sticky top-0 h-screen py-14 pl-8 pr-6 border-r border-border overflow-y-auto">
+
+          <div className="mb-7">
+            <img
+              src={jpPhoto}
+              alt="Jefferson Perolino"
+              className="w-24 h-24 rounded-full object-cover object-top border border-border shadow-sm"
+            />
+          </div>
+
+          <h1 className="font-serif text-[42px] leading-[1.05] italic text-foreground mb-3">
+            Jefferson<br />Perolino
+          </h1>
+
+          <p className="text-[10.5px] font-medium uppercase tracking-[0.16em] text-muted-foreground mb-2">
+            Virtual Assistant
+          </p>
+
+          <p className="flex items-center gap-1.5 text-[11px] text-muted-foreground mb-5">
+            <MapPin size={11} className="shrink-0" />
+            Philippines, Remote-Ready
+          </p>
+
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-[11px] font-medium mb-10 w-fit">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-60" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+            </span>
+            Available for new clients
+          </div>
+
+          <nav className="flex flex-col gap-0.5 mb-auto" data-testid="nav-sidebar">
             {NAV_LINKS.map((link) => (
               <a
                 key={link.name}
                 href={link.href}
                 onClick={(e) => scrollTo(e, link.href)}
-                className={`text-sm font-medium tracking-wide transition-colors hover:text-primary ${
-                  activeSection === link.href.substring(1) ? "text-primary" : "text-muted-foreground"
+                data-testid={`link-nav-${link.name.toLowerCase()}`}
+                className={`text-[13px] py-1.5 transition-colors rounded-sm -ml-1 pl-1 ${
+                  activeSection === link.href.slice(1)
+                    ? "text-foreground font-medium"
+                    : "text-muted-foreground hover:text-foreground"
                 }`}
               >
                 {link.name}
               </a>
             ))}
-            <Button asChild size="sm" className="rounded-full shadow-none font-semibold px-6 hover-elevate">
-              <a href="#contact" onClick={(e) => scrollTo(e, "#contact")}>Hire Me</a>
-            </Button>
           </nav>
 
-          {/* Mobile Menu Toggle */}
-          <button 
-            className="md:hidden text-foreground p-2"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            aria-label="Toggle menu"
-          >
-            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
-        </div>
+          <div className="flex gap-3.5 mt-10">
+            <a
+              href="https://linkedin.com/in/jeffersonperolino"
+              target="_blank"
+              rel="noopener noreferrer"
+              data-testid="link-linkedin"
+              className="text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <Linkedin size={16} />
+            </a>
+            <a
+              href="mailto:jeffersonperolino@gmail.com"
+              data-testid="link-email-sidebar"
+              className="text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <Mail size={16} />
+            </a>
+          </div>
+        </aside>
 
-        {/* Mobile Nav */}
-        {mobileMenuOpen && (
-          <div className="md:hidden absolute top-full left-0 w-full bg-background border-b border-border py-4 px-6 flex flex-col gap-4 shadow-lg animate-in slide-in-from-top-2">
-            {NAV_LINKS.map((link) => (
-              <a
-                key={link.name}
-                href={link.href}
-                onClick={(e) => scrollTo(e, link.href)}
-                className={`text-sm font-medium py-2 ${
-                  activeSection === link.href.substring(1) ? "text-primary" : "text-foreground"
-                }`}
+        {/* ── MAIN CONTENT ── */}
+        <main className="flex-1 min-w-0 px-8 md:px-12 xl:px-16 pb-32">
+
+          {/* Mobile identity header */}
+          <div className="md:hidden pt-12 pb-10 border-b border-border mb-12">
+            <img
+              src={jpPhoto}
+              alt="Jefferson Perolino"
+              className="w-20 h-20 rounded-full object-cover object-top mb-5 border border-border"
+            />
+            <h1 className="font-serif text-4xl italic leading-tight mb-2">
+              Jefferson Perolino
+            </h1>
+            <p className="text-[10.5px] uppercase tracking-[0.16em] text-muted-foreground mb-4">
+              Virtual Assistant
+            </p>
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-medium">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-60" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+              </span>
+              Available for new clients
+            </div>
+          </div>
+
+          {/* Intro / Typewriter */}
+          <div className="pt-14 pb-14 border-b border-border mb-16">
+            <p className="text-2xl md:text-[28px] font-serif italic text-primary leading-snug mb-4 min-h-[2em]">
+              <TypewriterText />
+            </p>
+            <p className="text-[14.5px] text-muted-foreground leading-relaxed max-w-md">
+              A self-driven virtual assistant from the Philippines helping clients stay organized, financially sound, and professionally represented — all remotely.
+            </p>
+            <div className="flex gap-3 mt-7">
+              <Button
+                size="sm"
+                className="rounded-full shadow-none font-medium px-5 text-xs"
+                asChild
+                data-testid="button-get-in-touch"
               >
-                {link.name}
-              </a>
-            ))}
-          </div>
-        )}
-      </header>
-
-      <main id="top">
-        {/* Hero Section */}
-        <section className="relative pt-40 pb-20 md:pt-48 md:pb-32 overflow-hidden flex items-center">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary/5 via-background to-background pointer-events-none" />
-          
-          <div className="container mx-auto px-6 md:px-12 relative z-10">
-            <div className="max-w-4xl">
-              <FadeIn>
-                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-secondary/10 text-secondary border border-secondary/20 text-sm font-medium mb-8">
-                  <span className="relative flex h-2.5 w-2.5">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-secondary"></span>
-                  </span>
-                  Available for new clients
-                </div>
-              </FadeIn>
-
-              <FadeIn delay={0.1}>
-                <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif text-foreground leading-tight tracking-tight mb-6">
-                  Jefferson Perolino
-                </h1>
-              </FadeIn>
-
-              <FadeIn delay={0.2}>
-                <div className="text-xl md:text-2xl lg:text-3xl text-muted-foreground font-light mb-8 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
-                  <span className="text-primary font-serif italic"><TypewriterText words={["Financial Manager", "Professional Writer", "Virtual Assistant", "Detail Orientated"]} /></span>
-                </div>
-              </FadeIn>
-              
-              <FadeIn delay={0.3}>
-                <div className="flex items-center gap-2 text-muted-foreground mb-12">
-                  <MapPin size={18} />
-                  <span>Philippines, Remote-Ready</span>
-                </div>
-              </FadeIn>
-
-              <FadeIn delay={0.4} className="flex flex-wrap items-center gap-4">
-                <Button size="lg" className="rounded-full shadow-none hover-elevate font-semibold px-8" asChild>
-                  <a href="#contact" onClick={(e) => scrollTo(e, "#contact")}>Get in touch</a>
-                </Button>
-                <Button size="lg" variant="outline" className="rounded-full shadow-none border-border bg-transparent hover:bg-muted/50 font-semibold px-8" asChild>
-                  <a href="#samples" onClick={(e) => scrollTo(e, "#samples")}>View work</a>
-                </Button>
-              </FadeIn>
-            </div>
-            
-            {/* Elegant Avatar */}
-            <FadeIn delay={0.5} className="absolute right-6 top-12 md:right-12 md:top-24 hidden lg:block opacity-10">
-               <div className="w-[400px] h-[400px] rounded-full bg-primary/20 flex items-center justify-center border border-primary/10 overflow-hidden backdrop-blur-3xl">
-                 <span className="text-[180px] font-serif text-primary/30 tracking-tighter">JP</span>
-               </div>
-            </FadeIn>
-          </div>
-        </section>
-
-        {/* About Section */}
-        <section id="about" className="py-24 bg-card border-y border-border">
-          <div className="container mx-auto px-6 md:px-12">
-            <div className="grid lg:grid-cols-12 gap-16 items-start">
-              <FadeIn className="lg:col-span-4">
-                <h2 className="text-3xl md:text-4xl font-serif mb-6 text-foreground">About Me</h2>
-                <div className="w-20 h-1 bg-primary rounded-full" />
-              </FadeIn>
-              
-              <FadeIn delay={0.2} className="lg:col-span-8 space-y-6 text-lg text-muted-foreground leading-relaxed">
-                <p>
-                  I'm Jefferson Perolino, a self-driven virtual assistant based in the Philippines with a strong background in financial management, professional writing, and administrative support. I help clients and businesses stay organized, financially sound, and professionally represented — all remotely.
-                </p>
-                <p>
-                  My approach is simple: I treat every task as if it were my own business. I bring attention to detail, clear communication, and a genuine commitment to quality to everything I handle — from managing accounts to drafting polished documents.
-                </p>
-              </FadeIn>
+                <a href="#contact" onClick={(e) => scrollTo(e, "#contact")}>
+                  Get in touch
+                </a>
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                className="rounded-full shadow-none font-medium px-5 text-xs border-border bg-transparent"
+                asChild
+                data-testid="button-view-work"
+              >
+                <a href="#samples" onClick={(e) => scrollTo(e, "#samples")}>
+                  View work
+                </a>
+              </Button>
             </div>
           </div>
-        </section>
 
-        {/* Services Section */}
-        <section id="services" className="py-32">
-          <div className="container mx-auto px-6 md:px-12">
-            <FadeIn className="max-w-2xl mb-16">
-              <h2 className="text-3xl md:text-4xl font-serif mb-6">Services & Expertise</h2>
-              <p className="text-lg text-muted-foreground">Comprehensive administrative and specialized support to keep your operations running smoothly.</p>
+          {/* ── ABOUT ── */}
+          <section id="about" className="mb-20 scroll-mt-8">
+            <SectionLabel>About</SectionLabel>
+            <FadeIn>
+              <div className="space-y-4 text-[14.5px] text-muted-foreground leading-[1.85] max-w-lg">
+                <p>
+                  I'm Jefferson Perolino, a self-driven virtual assistant based in
+                  the Philippines with a strong background in financial management,
+                  professional writing, and administrative support. I help clients
+                  and businesses stay organized, financially sound, and
+                  professionally represented — all remotely.
+                </p>
+                <p>
+                  My approach is simple: I treat every task as if it were my own
+                  business. I bring attention to detail, clear communication, and a
+                  genuine commitment to quality to everything I handle — from
+                  managing accounts to drafting polished documents.
+                </p>
+              </div>
             </FadeIn>
+          </section>
 
-            <div className="grid md:grid-cols-2 gap-8">
+          {/* ── SERVICES ── */}
+          <section id="services" className="mb-20 scroll-mt-8">
+            <SectionLabel>Services</SectionLabel>
+            <div>
               {[
                 {
                   title: "Financial Management",
-                  icon: <Calculator className="w-8 h-8 text-primary" />,
-                  desc: "Bookkeeping, budget tracking, expense reporting, payroll assistance, and financial record organization."
+                  icon: <Calculator size={16} />,
+                  desc: "Bookkeeping, budget tracking, expense reporting, payroll assistance, and financial record organization.",
                 },
                 {
                   title: "Professional Writing",
-                  icon: <PenTool className="w-8 h-8 text-primary" />,
-                  desc: "Business letters, email drafts, reports, proposals, and content writing tailored to your audience."
+                  icon: <PenTool size={16} />,
+                  desc: "Business letters, email drafts, reports, proposals, and content writing tailored to your audience.",
                 },
                 {
                   title: "Administrative Support",
-                  icon: <CalendarDays className="w-8 h-8 text-primary" />,
-                  desc: "Calendar management, data entry, document preparation, email management, and task coordination."
+                  icon: <CalendarDays size={16} />,
+                  desc: "Calendar management, data entry, document preparation, email management, and task coordination.",
                 },
                 {
                   title: "Research & Analysis",
-                  icon: <Search className="w-8 h-8 text-primary" />,
-                  desc: "Market research, competitor analysis, data gathering, and summarizing findings into actionable reports."
-                }
-              ].map((service, i) => (
-                <FadeIn key={i} delay={i * 0.1}>
-                  <div className="group p-8 rounded-2xl bg-card border border-border hover:border-primary/20 transition-all duration-300 h-full hover:shadow-lg hover:shadow-primary/5">
-                    <div className="w-14 h-14 rounded-xl bg-primary/5 flex items-center justify-center mb-6 group-hover:bg-primary/10 transition-colors">
-                      {service.icon}
+                  icon: <Search size={16} />,
+                  desc: "Market research, competitor analysis, data gathering, and summarizing findings into actionable reports.",
+                },
+              ].map((s, i) => (
+                <FadeIn key={i} delay={i * 0.07}>
+                  <div className="flex gap-4 py-5 border-b border-border last:border-0">
+                    <div className="shrink-0 mt-0.5 text-primary">{s.icon}</div>
+                    <div>
+                      <h3 className="text-[13.5px] font-semibold text-foreground mb-1">
+                        {s.title}
+                      </h3>
+                      <p className="text-[13.5px] text-muted-foreground leading-relaxed">
+                        {s.desc}
+                      </p>
                     </div>
-                    <h3 className="text-xl font-semibold mb-4 text-foreground">{service.title}</h3>
-                    <p className="text-muted-foreground leading-relaxed">{service.desc}</p>
                   </div>
                 </FadeIn>
               ))}
             </div>
-          </div>
-        </section>
+          </section>
 
-        {/* Skills Section */}
-        <section id="skills" className="py-24 bg-sidebar border-y border-border">
-          <div className="container mx-auto px-6 md:px-12">
-            <FadeIn className="text-center mb-16">
-              <h2 className="text-3xl md:text-4xl font-serif mb-6">Skills & Tools</h2>
-              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">The software and capabilities I utilize to deliver professional results.</p>
-            </FadeIn>
-
-            <div className="max-w-4xl mx-auto space-y-12">
+          {/* ── SKILLS ── */}
+          <section id="skills" className="mb-20 scroll-mt-8">
+            <SectionLabel>Skills & Tools</SectionLabel>
+            <div className="space-y-6">
               {[
-                { category: "Financial", skills: ["QuickBooks", "Microsoft Excel", "Google Sheets", "Budget Tracking", "Bookkeeping"] },
-                { category: "Writing", skills: ["Business Writing", "Proofreading", "Email Communication", "Report Writing", "Proposal Writing"] },
-                { category: "Administrative", skills: ["Google Workspace", "Microsoft Office", "Trello", "Notion", "Slack", "Zoom"] },
-                { category: "Soft Skills", skills: ["Attention to Detail", "Time Management", "Communication", "Reliability", "Problem Solving"] }
+                {
+                  category: "Financial",
+                  skills: ["QuickBooks", "Microsoft Excel", "Google Sheets", "Budget Tracking", "Bookkeeping"],
+                },
+                {
+                  category: "Writing",
+                  skills: ["Business Writing", "Proofreading", "Email Communication", "Report Writing", "Proposal Writing"],
+                },
+                {
+                  category: "Administrative",
+                  skills: ["Google Workspace", "Microsoft Office", "Trello", "Notion", "Slack", "Zoom"],
+                },
+                {
+                  category: "Soft Skills",
+                  skills: ["Attention to Detail", "Time Management", "Communication", "Reliability", "Problem Solving"],
+                },
               ].map((group, i) => (
-                <FadeIn key={group.category} delay={i * 0.1}>
-                  <div className="flex flex-col md:flex-row md:items-start gap-4 md:gap-8">
-                    <h3 className="text-lg font-medium text-foreground w-40 shrink-0 md:pt-2">{group.category}</h3>
-                    <div className="flex flex-wrap gap-2 md:gap-3 flex-1">
-                      {group.skills.map(skill => (
-                        <span key={skill} className="px-4 py-2 rounded-full bg-card border border-border text-sm text-muted-foreground shadow-sm hover:text-foreground transition-colors cursor-default">
+                <FadeIn key={i} delay={i * 0.07}>
+                  <div className="flex flex-col sm:flex-row sm:items-start gap-3 sm:gap-6">
+                    <span className="text-[10.5px] uppercase tracking-[0.1em] text-muted-foreground font-medium w-28 shrink-0 pt-1">
+                      {group.category}
+                    </span>
+                    <div className="flex flex-wrap gap-2">
+                      {group.skills.map((skill) => (
+                        <span
+                          key={skill}
+                          className="px-3 py-1 text-[12px] rounded-full border border-border text-muted-foreground bg-card hover:text-foreground transition-colors cursor-default"
+                        >
                           {skill}
                         </span>
                       ))}
@@ -380,188 +408,246 @@ export default function Home() {
                 </FadeIn>
               ))}
             </div>
-          </div>
-        </section>
+          </section>
 
-        {/* Work Samples Section */}
-        <section id="samples" className="py-32">
-          <div className="container mx-auto px-6 md:px-12">
-            <FadeIn className="mb-16 flex flex-col md:flex-row md:items-end justify-between gap-6">
-              <div>
-                <h2 className="text-3xl md:text-4xl font-serif mb-6">Selected Work Samples</h2>
-                <p className="text-lg text-muted-foreground max-w-2xl">Examples of documents, reports, and templates I've prepared.</p>
-              </div>
-            </FadeIn>
-
-            <div className="grid md:grid-cols-2 gap-6 lg:gap-8">
+          {/* ── WORK SAMPLES ── */}
+          <section id="samples" className="mb-20 scroll-mt-8">
+            <SectionLabel>Work Samples</SectionLabel>
+            <div className="grid sm:grid-cols-2 gap-4">
               {[
                 {
                   title: "Monthly Budget Report",
-                  desc: "Financial summary document with expense breakdown and variance analysis.",
+                  desc: "Financial summary with expense breakdown and variance analysis.",
                   tag: "Finance",
-                  color: "from-blue-500/10 to-primary/5"
+                  color: "from-blue-500/10 to-primary/5",
                 },
                 {
                   title: "Business Proposal Letter",
                   desc: "Formal client proposal with executive summary and pricing structure.",
                   tag: "Writing",
-                  color: "from-emerald-500/10 to-green-500/5"
+                  color: "from-emerald-500/10 to-green-500/5",
                 },
                 {
                   title: "Payroll Spreadsheet Template",
                   desc: "Automated Excel template for tracking employee hours and computing salaries.",
                   tag: "Finance",
-                  color: "from-purple-500/10 to-indigo-500/5"
+                  color: "from-purple-500/10 to-indigo-500/5",
                 },
                 {
                   title: "Marketing Research Report",
                   desc: "Competitor analysis and market overview compiled for a startup client.",
                   tag: "Research",
-                  color: "from-orange-500/10 to-amber-500/5"
-                }
-              ].map((sample, i) => (
-                <FadeIn key={i} delay={i * 0.1}>
-                  <div className="group relative overflow-hidden rounded-2xl border border-border bg-card hover:border-primary/30 transition-colors h-full flex flex-col">
-                    <div className={`h-48 bg-gradient-to-br ${sample.color} flex items-center justify-center border-b border-border`}>
-                      <div className="px-3 py-1 rounded-full bg-background/80 backdrop-blur-sm border border-border text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                        {sample.tag}
-                      </div>
+                  color: "from-orange-500/10 to-amber-500/5",
+                },
+              ].map((s, i) => (
+                <FadeIn key={i} delay={i * 0.07}>
+                  <div
+                    className="rounded-xl border border-border overflow-hidden group hover:border-primary/30 transition-colors"
+                    data-testid={`card-sample-${i}`}
+                  >
+                    <div className={`h-24 bg-gradient-to-br ${s.color} flex items-end p-3`}>
+                      <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium bg-background/70 backdrop-blur-sm px-2.5 py-1 rounded-full border border-border">
+                        {s.tag}
+                      </span>
                     </div>
-                    <div className="p-8 flex flex-col flex-1">
-                      <h3 className="text-xl font-semibold mb-3 text-foreground group-hover:text-primary transition-colors">{sample.title}</h3>
-                      <p className="text-muted-foreground mb-8 flex-1">{sample.desc}</p>
-                      <Button variant="ghost" className="w-fit text-primary font-medium hover:bg-primary/5 px-0 pb-0 hover:text-primary" asChild>
-                        <a href="#" className="inline-flex items-center gap-2 group/link">
-                          View Sample
-                          <ArrowRight className="w-4 h-4 group-hover/link:translate-x-1 transition-transform" />
-                        </a>
-                      </Button>
+                    <div className="p-4">
+                      <h3 className="text-[13px] font-semibold text-foreground mb-1 group-hover:text-primary transition-colors">
+                        {s.title}
+                      </h3>
+                      <p className="text-[12.5px] text-muted-foreground mb-4 leading-relaxed">
+                        {s.desc}
+                      </p>
+                      <a
+                        href="#"
+                        className="inline-flex items-center gap-1.5 text-[12px] text-primary font-medium group/link"
+                        data-testid={`link-sample-${i}`}
+                      >
+                        View Sample{" "}
+                        <ArrowRight
+                          size={11}
+                          className="group-hover/link:translate-x-0.5 transition-transform"
+                        />
+                      </a>
                     </div>
                   </div>
                 </FadeIn>
               ))}
             </div>
-          </div>
-        </section>
+          </section>
 
-        {/* Contact Section */}
-        <section id="contact" className="py-32">
-          <div className="container mx-auto px-6 md:px-12">
-            <div className="max-w-5xl mx-auto bg-card border border-border rounded-3xl overflow-hidden shadow-xl shadow-black/5">
-              <div className="grid md:grid-cols-5 h-full">
-                {/* Contact Info */}
-                <div className="md:col-span-2 bg-sidebar p-10 md:p-12 border-b md:border-b-0 md:border-r border-border flex flex-col">
-                  <h2 className="text-3xl font-serif mb-4 text-foreground">Let's Talk</h2>
-                  <p className="text-muted-foreground mb-12">Have a project in mind? Let's talk. I respond to all messages within 24 hours.</p>
-                  
-                  <div className="space-y-8 flex-1">
-                    <div className="flex flex-col gap-2">
-                      <span className="text-sm text-muted-foreground font-medium uppercase tracking-wider">Email</span>
-                      <div className="flex items-center gap-3">
-                        <a href="mailto:jeffersonperolino@gmail.com" className="text-sm text-foreground hover:text-primary transition-colors font-medium break-all">
-                          jeffersonperolino@gmail.com
-                        </a>
-                        <button onClick={copyEmail} className="p-2 text-muted-foreground hover:text-primary hover:bg-primary/5 rounded-md transition-colors" title="Copy Email">
-                          <Copy size={16} />
-                        </button>
-                      </div>
+          {/* ── CONTACT ── */}
+          <section id="contact" className="mb-20 scroll-mt-8">
+            <SectionLabel>Contact</SectionLabel>
+            <div className="grid md:grid-cols-2 gap-12">
+              <FadeIn>
+                <p className="text-[14px] text-muted-foreground leading-relaxed mb-8">
+                  Have a project in mind? Let's talk. I respond to all messages
+                  within 24 hours.
+                </p>
+                <div className="space-y-5">
+                  <div>
+                    <span className="text-[10.5px] uppercase tracking-[0.1em] text-muted-foreground font-medium block mb-1.5">
+                      Email
+                    </span>
+                    <div className="flex items-center gap-2">
+                      <a
+                        href="mailto:jeffersonperolino@gmail.com"
+                        className="text-[13px] text-foreground hover:text-primary transition-colors font-medium"
+                        data-testid="link-email-contact"
+                      >
+                        jeffersonperolino@gmail.com
+                      </a>
+                      <button
+                        onClick={copyEmail}
+                        className="text-muted-foreground hover:text-primary transition-colors p-1 rounded"
+                        title="Copy email"
+                        data-testid="button-copy-email"
+                      >
+                        <Copy size={13} />
+                      </button>
                     </div>
-                    
-                    <div className="flex flex-col gap-2">
-                      <span className="text-sm text-muted-foreground font-medium uppercase tracking-wider">Social</span>
-                      <div className="flex items-center gap-4">
-                        <a href="https://linkedin.com/in/jeffersonperolino" target="_blank" rel="noopener noreferrer" className="p-3 bg-card border border-border rounded-full text-foreground hover:text-primary hover:border-primary/30 transition-all hover:shadow-sm">
-                          <Linkedin size={20} />
-                        </a>
-                        <a href="mailto:jeffersonperolino@gmail.com" className="p-3 bg-card border border-border rounded-full text-foreground hover:text-primary hover:border-primary/30 transition-all hover:shadow-sm">
-                          <Mail size={20} />
-                        </a>
-                      </div>
+                  </div>
+                  <div>
+                    <span className="text-[10.5px] uppercase tracking-[0.1em] text-muted-foreground font-medium block mb-2">
+                      Social
+                    </span>
+                    <div className="flex gap-2.5">
+                      <a
+                        href="https://linkedin.com/in/jeffersonperolino"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        data-testid="link-linkedin-contact"
+                        className="p-2 border border-border rounded-lg text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-all"
+                      >
+                        <Linkedin size={15} />
+                      </a>
+                      <a
+                        href="mailto:jeffersonperolino@gmail.com"
+                        data-testid="link-email-icon-contact"
+                        className="p-2 border border-border rounded-lg text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-all"
+                      >
+                        <Mail size={15} />
+                      </a>
                     </div>
                   </div>
                 </div>
+              </FadeIn>
 
-                {/* Contact Form */}
-                <div className="md:col-span-3 p-10 md:p-12">
-                  <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                      <div className="grid md:grid-cols-2 gap-6">
-                        <FormField
-                          control={form.control}
-                          name="name"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Name</FormLabel>
-                              <FormControl>
-                                <Input placeholder="John Doe" {...field} className="bg-background" />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name="email"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Email</FormLabel>
-                              <FormControl>
-                                <Input placeholder="john@example.com" {...field} className="bg-background" />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
+              <FadeIn delay={0.1}>
+                <Form {...form}>
+                  <form
+                    onSubmit={form.handleSubmit(onSubmit)}
+                    className="space-y-4"
+                    data-testid="form-contact"
+                  >
+                    <div className="grid grid-cols-2 gap-3">
                       <FormField
                         control={form.control}
-                        name="subject"
+                        name="name"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Subject</FormLabel>
+                            <FormLabel className="text-[10.5px] uppercase tracking-[0.1em] text-muted-foreground font-medium">
+                              Name
+                            </FormLabel>
                             <FormControl>
-                              <Input placeholder="How can I help you?" {...field} className="bg-background" />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="message"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Message</FormLabel>
-                            <FormControl>
-                              <Textarea 
-                                placeholder="Tell me about your project..." 
-                                className="min-h-[150px] resize-y bg-background" 
-                                {...field} 
+                              <Input
+                                placeholder="John Doe"
+                                {...field}
+                                className="bg-background text-sm"
+                                data-testid="input-name"
                               />
                             </FormControl>
-                            <FormMessage />
+                            <FormMessage className="text-xs" />
                           </FormItem>
                         )}
                       />
-                      <Button type="submit" size="lg" className="w-full sm:w-auto rounded-full px-8 shadow-none hover-elevate">
-                        Send Message
-                      </Button>
-                    </form>
-                  </Form>
-                </div>
-              </div>
+                      <FormField
+                        control={form.control}
+                        name="email"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-[10.5px] uppercase tracking-[0.1em] text-muted-foreground font-medium">
+                              Email
+                            </FormLabel>
+                            <FormControl>
+                              <Input
+                                placeholder="john@example.com"
+                                {...field}
+                                className="bg-background text-sm"
+                                data-testid="input-email"
+                              />
+                            </FormControl>
+                            <FormMessage className="text-xs" />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    <FormField
+                      control={form.control}
+                      name="subject"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-[10.5px] uppercase tracking-[0.1em] text-muted-foreground font-medium">
+                            Subject
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="Project inquiry"
+                              {...field}
+                              className="bg-background text-sm"
+                              data-testid="input-subject"
+                            />
+                          </FormControl>
+                          <FormMessage className="text-xs" />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="message"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-[10.5px] uppercase tracking-[0.1em] text-muted-foreground font-medium">
+                            Message
+                          </FormLabel>
+                          <FormControl>
+                            <Textarea
+                              placeholder="Tell me about your project..."
+                              {...field}
+                              rows={4}
+                              className="bg-background text-sm resize-none"
+                              data-testid="textarea-message"
+                            />
+                          </FormControl>
+                          <FormMessage className="text-xs" />
+                        </FormItem>
+                      )}
+                    />
+                    <Button
+                      type="submit"
+                      size="sm"
+                      className="rounded-full shadow-none font-medium px-6 text-xs"
+                      data-testid="button-submit"
+                    >
+                      Send Message
+                    </Button>
+                  </form>
+                </Form>
+              </FadeIn>
             </div>
-          </div>
-        </section>
-      </main>
+          </section>
 
-      {/* Footer */}
-      <footer className="py-8 bg-card border-t border-border text-center">
-        <div className="container mx-auto px-6">
-          <p className="text-muted-foreground text-sm mb-2">© 2026 Jefferson Perolino. All rights reserved.</p>
-          <p className="text-muted-foreground/60 text-xs">Virtual Assistant · Financial Management · Professional Writing</p>
-        </div>
-      </footer>
+          {/* Footer */}
+          <footer className="border-t border-border pt-8 pb-4">
+            <p className="text-xs text-muted-foreground">
+              © 2026 Jefferson Perolino. All rights reserved.
+            </p>
+            <p className="text-xs text-muted-foreground mt-1">
+              Virtual Assistant · Financial Management · Professional Writing
+            </p>
+          </footer>
+        </main>
+      </div>
     </div>
   );
 }
