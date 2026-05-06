@@ -304,7 +304,7 @@ export default function Home() {
           </div>
 
           {/* Intro / Typewriter */}
-          <div className="pt-14 pb-14 border-b border-border mb-16">
+          <div className="pt-14 pb-6 mb-8">
             <p className="text-2xl md:text-[28px] font-serif italic text-primary leading-snug mb-4 min-h-[2em]">
               <TypewriterText />
             </p>
