@@ -47,7 +47,7 @@ const TYPEWRITER_WORDS = [
   "Financial Manager",
   "Professional Writer",
   "Virtual Assistant",
-  "Detail Orientated",
+  "Detail Oriented",
 ];
 
 const FadeIn = ({
