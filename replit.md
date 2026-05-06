@@ -1,45 +1,54 @@
-# [Project name]
+# Jefferson Perolino — Portfolio
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+A professional single-page portfolio website for Jefferson Perolino, a Virtual Assistant specializing in financial management and professional writing.
 
 ## Run & Operate
 
+- `pnpm --filter @workspace/portfolio run dev` — run the portfolio (port auto-assigned)
 - `pnpm --filter @workspace/api-server run dev` — run the API server (port 5000)
 - `pnpm run typecheck` — full typecheck across all packages
 - `pnpm run build` — typecheck + build all packages
-- `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
-- `pnpm --filter @workspace/db run push` — push DB schema changes (dev only)
-- Required env: `DATABASE_URL` — Postgres connection string
+- Required env: `DATABASE_URL` — Postgres connection string (API server only)
 
 ## Stack
 
 - pnpm workspaces, Node.js 24, TypeScript 5.9
-- API: Express 5
-- DB: PostgreSQL + Drizzle ORM
-- Validation: Zod (`zod/v4`), `drizzle-zod`
-- API codegen: Orval (from OpenAPI spec)
-- Build: esbuild (CJS bundle)
+- Frontend: React + Vite, Tailwind CSS, framer-motion, lucide-react
+- Forms: react-hook-form + zod
+- API: Express 5 (backend, currently unused by portfolio)
+- DB: PostgreSQL + Drizzle ORM (unused by portfolio)
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- `artifacts/portfolio/src/pages/Home.tsx` — entire portfolio page
+- `artifacts/portfolio/src/index.css` — theme palette (HSL CSS vars)
+- `artifacts/portfolio/src/App.tsx` — wouter router
+- `lib/api-spec/openapi.yaml` — OpenAPI contract (health check only)
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+- Portfolio is purely frontend (no backend) — all sections are static React components
+- Contact form simulates submission with setTimeout + toast (no backend integration)
+- Profile photo uses a styled "JP" initials avatar (no image file needed)
+- Framer-motion handles scroll-triggered fade-in animations
+- IntersectionObserver drives active nav link highlighting as user scrolls
 
 ## Product
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+Single-page portfolio with: Hero (typewriter effect, availability badge), About, Services (4 offerings), Skills & Tools (chip tags), Work Samples (4 cards), Testimonials (3 reviews), and a Contact form with validation.
 
 ## User preferences
 
-_Populate as you build — explicit user instructions worth remembering across sessions._
+- Wants a professional, non-generic look
+- No formal design background — trusts the agent's design judgment
+- Photo not yet added (using JP initials avatar as placeholder)
 
 ## Gotchas
 
-_Populate as you build — sharp edges, "always run X before Y" rules._
+- Google Fonts @import must be the VERY FIRST line of index.css (before @import "tailwindcss")
+- All CSS vars in index.css must be set to real HSL values — never leave `red` placeholders
 
 ## Pointers
 
 - See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and package details
+- See the `react-vite` skill for frontend build conventions
