@@ -500,7 +500,7 @@ export default function Home() {
                     <div className="flex flex-col gap-2">
                       <span className="text-sm text-muted-foreground font-medium uppercase tracking-wider">Email</span>
                       <div className="flex items-center gap-3">
-                        <a href="mailto:jeffersonperolino@gmail.com" className="text-lg text-foreground hover:text-primary transition-colors font-medium">
+                        <a href="mailto:jeffersonperolino@gmail.com" className="text-sm text-foreground hover:text-primary transition-colors font-medium break-all">
                           jeffersonperolino@gmail.com
                         </a>
                         <button onClick={copyEmail} className="p-2 text-muted-foreground hover:text-primary hover:bg-primary/5 rounded-md transition-colors" title="Copy Email">
