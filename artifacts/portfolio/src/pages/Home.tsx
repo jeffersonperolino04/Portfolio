@@ -191,7 +191,7 @@ export default function Home() {
     } catch {
       toast({
         title: "Something went wrong",
-        description: "Your message couldn't be sent. Please email me directly at jeffersonperolino@gmail.com.",
+        description: "Your message couldn't be sent. Please email me directly at jeffersonperolino04@gmail.com.",
         variant: "destructive",
       });
     } finally {
@@ -200,7 +200,7 @@ export default function Home() {
   }
 
   const copyEmail = () => {
-    navigator.clipboard.writeText("jeffersonperolino@gmail.com");
+    navigator.clipboard.writeText("jeffersonperolino04@gmail.com");
     toast({ title: "Copied!", description: "Email address copied to clipboard." });
   };
 
@@ -269,7 +269,7 @@ export default function Home() {
               <Linkedin size={16} />
             </a>
             <a
-              href="mailto:jeffersonperolino@gmail.com"
+              href="mailto:jeffersonperolino04@gmail.com"
               data-testid="link-email-sidebar"
               className="text-muted-foreground hover:text-foreground transition-colors"
             >
@@ -525,11 +525,11 @@ export default function Home() {
                     </span>
                     <div className="flex items-center gap-2">
                       <a
-                        href="mailto:jeffersonperolino@gmail.com"
+                        href="mailto:jeffersonperolino04@gmail.com"
                         className="text-[13px] text-foreground hover:text-primary transition-colors font-medium"
                         data-testid="link-email-contact"
                       >
-                        jeffersonperolino@gmail.com
+                        jeffersonperolino04@gmail.com
                       </a>
                       <button
                         onClick={copyEmail}
@@ -556,7 +556,7 @@ export default function Home() {
                         <Linkedin size={15} />
                       </a>
                       <a
-                        href="mailto:jeffersonperolino@gmail.com"
+                        href="mailto:jeffersonperolino04@gmail.com"
                         data-testid="link-email-icon-contact"
                         className="p-2 border border-border rounded-lg text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-all"
                       >
