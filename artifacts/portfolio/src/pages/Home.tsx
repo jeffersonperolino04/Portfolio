@@ -260,7 +260,7 @@ export default function Home() {
 
           <div className="flex gap-3.5 mt-10">
             <a
-              href="https://linkedin.com/in/jeffersonperolino"
+              href="https://www.linkedin.com/in/jefferson-perolino-775660308"
               target="_blank"
               rel="noopener noreferrer"
               data-testid="link-linkedin"
@@ -547,7 +547,7 @@ export default function Home() {
                     </span>
                     <div className="flex gap-2.5">
                       <a
-                        href="https://linkedin.com/in/jeffersonperolino"
+                        href="https://www.linkedin.com/in/jefferson-perolino-775660308"
                         target="_blank"
                         rel="noopener noreferrer"
                         data-testid="link-linkedin-contact"
