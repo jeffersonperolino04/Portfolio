@@ -217,14 +217,14 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* ── MOBILE HERO (full-screen intro, hidden on md+) ── */}
-      <div className="md:hidden min-h-screen flex flex-col items-center justify-center text-center px-[6vw] py-[10vw] relative">
+      <div className="md:hidden min-h-screen flex flex-col items-center justify-center text-center px-[6vw] py-[4vw] relative">
         <img
           src={jpPhoto}
           alt="Jefferson Perolino"
           className="rounded-full object-cover object-top border-2 border-border shadow-md"
           style={{
-            width: "clamp(120px, 40vw, 180px)",
-            height: "clamp(120px, 40vw, 180px)",
+            width: "clamp(140px, 48vw, 200px)",
+            height: "clamp(140px, 48vw, 200px)",
             marginBottom: "clamp(16px, 5vw, 28px)",
           }}
         />
