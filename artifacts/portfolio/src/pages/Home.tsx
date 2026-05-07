@@ -92,7 +92,7 @@ const TypewriterText = () => {
     }
     const t = setTimeout(
       () => setSubIndex((p) => p + (reverse ? -1 : 1)),
-      reverse ? 45 : 130
+      reverse ? 45 : 130,
     );
     return () => clearTimeout(t);
   }, [subIndex, index, reverse]);
@@ -164,7 +164,8 @@ export default function Home() {
     if (!endpoint) {
       toast({
         title: "Configuration error",
-        description: "Contact form is not yet configured. Please try reaching out directly by email.",
+        description:
+          "Contact form is not yet configured. Please try reaching out directly by email.",
         variant: "destructive",
       });
       return;
@@ -173,7 +174,10 @@ export default function Home() {
     try {
       const res = await fetch(endpoint, {
         method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
         body: JSON.stringify({
           name: values.name,
           email: values.email,
@@ -193,7 +197,8 @@ export default function Home() {
     } catch {
       toast({
         title: "Something went wrong",
-        description: "Your message couldn't be sent. Please email me directly at jeffersonperolino04@gmail.com.",
+        description:
+          "Your message couldn't be sent. Please email me directly at jeffersonperolino04@gmail.com.",
         variant: "destructive",
       });
     } finally {
@@ -203,12 +208,14 @@ export default function Home() {
 
   const copyEmail = () => {
     navigator.clipboard.writeText("jeffersonperolino04@gmail.com");
-    toast({ title: "Copied!", description: "Email address copied to clipboard." });
+    toast({
+      title: "Copied!",
+      description: "Email address copied to clipboard.",
+    });
   };
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-
       {/* ── MOBILE HERO (full-screen intro, hidden on md+) ── */}
       <div className="md:hidden min-h-screen flex flex-col items-center justify-center text-center px-[6vw] py-[10vw] relative">
         <img
@@ -223,13 +230,21 @@ export default function Home() {
         />
         <h1
           className="font-serif italic text-foreground leading-tight"
-          style={{ fontSize: "clamp(30px, 10vw, 52px)", marginBottom: "clamp(6px, 2vw, 12px)" }}
+          style={{
+            fontSize: "clamp(30px, 10vw, 52px)",
+            marginBottom: "clamp(6px, 2vw, 12px)",
+          }}
         >
-          Jefferson<br />Perolino
+          Jefferson
+          <br />
+          Perolino
         </h1>
         <p
           className="uppercase tracking-[0.18em] text-muted-foreground"
-          style={{ fontSize: "clamp(9px, 2.8vw, 12px)", marginBottom: "clamp(14px, 4vw, 22px)" }}
+          style={{
+            fontSize: "clamp(9px, 2.8vw, 12px)",
+            marginBottom: "clamp(14px, 4vw, 22px)",
+          }}
         >
           Virtual Assistant
         </p>
@@ -243,7 +258,10 @@ export default function Home() {
         >
           <span
             className="relative flex shrink-0"
-            style={{ width: "clamp(6px, 2vw, 8px)", height: "clamp(6px, 2vw, 8px)" }}
+            style={{
+              width: "clamp(6px, 2vw, 8px)",
+              height: "clamp(6px, 2vw, 8px)",
+            }}
           >
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-60" />
             <span className="relative inline-flex rounded-full h-full w-full bg-emerald-500" />
@@ -269,7 +287,8 @@ export default function Home() {
           }}
         >
           A self-driven virtual assistant from the Philippines helping clients
-          stay organized, financially sound, and professionally represented — all remotely.
+          stay organized, financially sound, and professionally represented —
+          all remotely.
         </p>
         <div className="flex gap-3">
           <Button
@@ -277,7 +296,9 @@ export default function Home() {
             className="rounded-full shadow-none font-medium px-5 text-xs"
             asChild
           >
-            <a href="#contact" onClick={(e) => scrollTo(e, "#contact")}>Get in touch</a>
+            <a href="#contact" onClick={(e) => scrollTo(e, "#contact")}>
+              Get in touch
+            </a>
           </Button>
           <Button
             size="sm"
@@ -285,17 +306,10 @@ export default function Home() {
             className="rounded-full shadow-none font-medium px-5 text-xs border-border bg-transparent"
             asChild
           >
-            <a href="#samples" onClick={(e) => scrollTo(e, "#samples")}>View work</a>
+            <a href="#samples" onClick={(e) => scrollTo(e, "#samples")}>
+              View work
+            </a>
           </Button>
-        </div>
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1.5">
-          <div className="w-px h-8 bg-muted-foreground/30 animate-pulse" />
-          <span
-            className="text-muted-foreground/50"
-            style={{ fontSize: "clamp(9px, 2.5vw, 11px)" }}
-          >
-            scroll
-          </span>
         </div>
       </div>
 
@@ -312,7 +326,10 @@ export default function Home() {
             {/* Identity row */}
             <div
               className="flex items-center gap-[3.5vw] px-[4vw]"
-              style={{ paddingTop: "clamp(10px, 3vw, 16px)", paddingBottom: "clamp(10px, 3vw, 16px)" }}
+              style={{
+                paddingTop: "clamp(10px, 3vw, 16px)",
+                paddingBottom: "clamp(10px, 3vw, 16px)",
+              }}
             >
               <img
                 src={jpPhoto}
@@ -333,7 +350,10 @@ export default function Home() {
                 <div className="flex items-center gap-[1.5vw] mt-[1vw]">
                   <span
                     className="relative flex shrink-0"
-                    style={{ width: "clamp(7px, 2vw, 9px)", height: "clamp(7px, 2vw, 9px)" }}
+                    style={{
+                      width: "clamp(7px, 2vw, 9px)",
+                      height: "clamp(7px, 2vw, 9px)",
+                    }}
                   >
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-60" />
                     <span className="relative inline-flex rounded-full h-full w-full bg-emerald-500" />
@@ -351,7 +371,10 @@ export default function Home() {
             {/* Nav row */}
             <div
               className="scrollbar-none overflow-x-auto flex border-t border-border/40 px-[4vw] gap-[5vw]"
-              style={{ paddingTop: "clamp(8px, 2.2vw, 12px)", paddingBottom: "clamp(8px, 2.2vw, 12px)" }}
+              style={{
+                paddingTop: "clamp(8px, 2.2vw, 12px)",
+                paddingBottom: "clamp(8px, 2.2vw, 12px)",
+              }}
             >
               {NAV_LINKS.map((link) => (
                 <a
@@ -374,10 +397,8 @@ export default function Home() {
       </AnimatePresence>
 
       <div className="max-w-5xl mx-auto flex min-h-screen">
-
         {/* ── SIDEBAR ── */}
         <aside className="hidden md:flex w-64 xl:w-72 shrink-0 flex-col sticky top-0 h-screen py-14 pl-8 pr-6 border-r border-border overflow-y-auto">
-
           <div className="mb-7 flex justify-center">
             <img
               src={jpPhoto}
@@ -387,7 +408,9 @@ export default function Home() {
           </div>
 
           <h1 className="font-serif text-[42px] leading-[1.05] italic text-foreground mb-3">
-            Jefferson<br />Perolino
+            Jefferson
+            <br />
+            Perolino
           </h1>
 
           <p className="text-[10.5px] font-medium uppercase tracking-[0.16em] text-muted-foreground mb-2">
@@ -407,7 +430,10 @@ export default function Home() {
             Available for new clients
           </div>
 
-          <nav className="flex flex-col gap-0.5 mb-auto" data-testid="nav-sidebar">
+          <nav
+            className="flex flex-col gap-0.5 mb-auto"
+            data-testid="nav-sidebar"
+          >
             {NAV_LINKS.map((link) => (
               <a
                 key={link.name}
@@ -447,14 +473,15 @@ export default function Home() {
 
         {/* ── MAIN CONTENT ── */}
         <main className="flex-1 min-w-0 px-8 md:px-12 xl:px-16 pb-32">
-
           {/* Intro / Typewriter — desktop only, hero covers this on mobile */}
           <div className="hidden md:block pt-14 pb-6 mb-8">
             <p className="text-2xl md:text-[28px] font-serif italic text-primary leading-snug mb-4 min-h-[2em]">
               <TypewriterText />
             </p>
             <p className="text-[14.5px] text-muted-foreground leading-relaxed max-w-md">
-              A self-driven virtual assistant from the Philippines helping clients stay organized, financially sound, and professionally represented — all remotely.
+              A self-driven virtual assistant from the Philippines helping
+              clients stay organized, financially sound, and professionally
+              represented — all remotely.
             </p>
             <div className="flex gap-3 mt-7">
               <Button
@@ -487,17 +514,17 @@ export default function Home() {
             <FadeIn>
               <div className="space-y-4 text-[14.5px] text-muted-foreground leading-[1.85] max-w-lg">
                 <p>
-                  I'm Jefferson Perolino, a self-driven virtual assistant based in
-                  the Philippines with a strong background in financial management,
-                  professional writing, and administrative support. I help clients
-                  and businesses stay organized, financially sound, and
-                  professionally represented — all remotely.
+                  I'm Jefferson Perolino, a self-driven virtual assistant based
+                  in the Philippines with a strong background in financial
+                  management, professional writing, and administrative support.
+                  I help clients and businesses stay organized, financially
+                  sound, and professionally represented — all remotely.
                 </p>
                 <p>
                   My approach is simple: I treat every task as if it were my own
-                  business. I bring attention to detail, clear communication, and a
-                  genuine commitment to quality to everything I handle — from
-                  managing accounts to drafting polished documents.
+                  business. I bring attention to detail, clear communication,
+                  and a genuine commitment to quality to everything I handle —
+                  from managing accounts to drafting polished documents.
                 </p>
               </div>
             </FadeIn>
@@ -553,19 +580,44 @@ export default function Home() {
               {[
                 {
                   category: "Financial",
-                  skills: ["QuickBooks", "Microsoft Excel", "Google Sheets", "Budget Tracking", "Bookkeeping"],
+                  skills: [
+                    "QuickBooks",
+                    "Microsoft Excel",
+                    "Google Sheets",
+                    "Budget Tracking",
+                    "Bookkeeping",
+                  ],
                 },
                 {
                   category: "Writing",
-                  skills: ["Business Writing", "Proofreading", "Email Communication", "Report Writing", "Proposal Writing"],
+                  skills: [
+                    "Business Writing",
+                    "Proofreading",
+                    "Email Communication",
+                    "Report Writing",
+                    "Proposal Writing",
+                  ],
                 },
                 {
                   category: "Administrative",
-                  skills: ["Google Workspace", "Microsoft Office", "Trello", "Notion", "Slack", "Zoom"],
+                  skills: [
+                    "Google Workspace",
+                    "Microsoft Office",
+                    "Trello",
+                    "Notion",
+                    "Slack",
+                    "Zoom",
+                  ],
                 },
                 {
                   category: "Soft Skills",
-                  skills: ["Attention to Detail", "Time Management", "Communication", "Reliability", "Problem Solving"],
+                  skills: [
+                    "Attention to Detail",
+                    "Time Management",
+                    "Communication",
+                    "Reliability",
+                    "Problem Solving",
+                  ],
                 },
               ].map((group, i) => (
                 <FadeIn key={i} delay={i * 0.07}>
@@ -624,7 +676,9 @@ export default function Home() {
                     className="rounded-xl border border-border overflow-hidden group hover:border-primary/30 transition-colors"
                     data-testid={`card-sample-${i}`}
                   >
-                    <div className={`h-24 bg-gradient-to-br ${s.color} flex items-end p-3`}>
+                    <div
+                      className={`h-24 bg-gradient-to-br ${s.color} flex items-end p-3`}
+                    >
                       <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium bg-background/70 backdrop-blur-sm px-2.5 py-1 rounded-full border border-border">
                         {s.tag}
                       </span>
