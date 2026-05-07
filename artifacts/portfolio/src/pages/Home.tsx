@@ -206,6 +206,74 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
+
+      {/* ── MOBILE STICKY HEADER (hidden on md+) ── */}
+      <div className="sticky top-0 z-50 md:hidden bg-background/95 backdrop-blur-sm border-b border-border">
+        {/* Identity row */}
+        <div
+          className="flex items-center gap-[3vw] px-[4vw]"
+          style={{ paddingTop: "clamp(6px, 2vw, 12px)", paddingBottom: "clamp(6px, 2vw, 12px)" }}
+        >
+          <img
+            src={jpPhoto}
+            alt="Jefferson Perolino"
+            className="rounded-full object-cover object-top border border-border shrink-0"
+            style={{
+              width: "clamp(32px, 9vw, 46px)",
+              height: "clamp(32px, 9vw, 46px)",
+            }}
+          />
+          <div className="flex flex-col min-w-0">
+            <span
+              className="font-serif italic text-foreground leading-tight truncate"
+              style={{ fontSize: "clamp(13px, 4vw, 18px)" }}
+            >
+              Jefferson Perolino
+            </span>
+            <div className="flex items-center gap-[1.5vw] mt-[0.5vw]">
+              <span
+                className="relative flex shrink-0"
+                style={{
+                  width: "clamp(6px, 1.8vw, 8px)",
+                  height: "clamp(6px, 1.8vw, 8px)",
+                }}
+              >
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-60" />
+                <span className="relative inline-flex rounded-full h-full w-full bg-emerald-500" />
+              </span>
+              <span
+                className="text-emerald-700 font-medium whitespace-nowrap"
+                style={{ fontSize: "clamp(9px, 2.6vw, 11px)" }}
+              >
+                Available for new clients
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Horizontal scrollable nav */}
+        <div
+          className="scrollbar-none overflow-x-auto flex border-t border-border/40 px-[4vw] gap-[5vw]"
+          style={{ paddingTop: "clamp(6px, 1.8vw, 10px)", paddingBottom: "clamp(6px, 1.8vw, 10px)" }}
+        >
+          {NAV_LINKS.map((link) => (
+            <a
+              key={link.name}
+              href={link.href}
+              onClick={(e) => scrollTo(e, link.href)}
+              className={`whitespace-nowrap font-medium transition-colors shrink-0 ${
+                activeSection === link.href.slice(1)
+                  ? "text-foreground"
+                  : "text-muted-foreground"
+              }`}
+              style={{ fontSize: "clamp(10px, 3vw, 13px)" }}
+            >
+              {link.name}
+            </a>
+          ))}
+        </div>
+      </div>
+
       <div className="max-w-5xl mx-auto flex min-h-screen">
 
         {/* ── SIDEBAR ── */}
@@ -281,30 +349,8 @@ export default function Home() {
         {/* ── MAIN CONTENT ── */}
         <main className="flex-1 min-w-0 px-8 md:px-12 xl:px-16 pb-32">
 
-          {/* Mobile identity header */}
-          <div className="md:hidden pt-12 pb-10 border-b border-border mb-12">
-            <img
-              src={jpPhoto}
-              alt="Jefferson Perolino"
-              className="w-20 h-20 rounded-full object-cover object-top mb-5 border border-border"
-            />
-            <h1 className="font-serif text-4xl italic leading-tight mb-2">
-              Jefferson Perolino
-            </h1>
-            <p className="text-[10.5px] uppercase tracking-[0.16em] text-muted-foreground mb-4">
-              Virtual Assistant
-            </p>
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-medium">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-60" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
-              </span>
-              Available for new clients
-            </div>
-          </div>
-
           {/* Intro / Typewriter */}
-          <div className="pt-14 pb-6 mb-8">
+          <div className="pt-6 md:pt-14 pb-6 mb-8">
             <p className="text-2xl md:text-[28px] font-serif italic text-primary leading-snug mb-4 min-h-[2em]">
               <TypewriterText />
             </p>
@@ -337,7 +383,7 @@ export default function Home() {
           </div>
 
           {/* ── ABOUT ── */}
-          <section id="about" className="mb-20 scroll-mt-8">
+          <section id="about" className="mb-20 scroll-mt-28 md:scroll-mt-8">
             <SectionLabel>About</SectionLabel>
             <FadeIn>
               <div className="space-y-4 text-[14.5px] text-muted-foreground leading-[1.85] max-w-lg">
@@ -359,7 +405,7 @@ export default function Home() {
           </section>
 
           {/* ── SERVICES ── */}
-          <section id="services" className="mb-20 scroll-mt-8">
+          <section id="services" className="mb-20 scroll-mt-28 md:scroll-mt-8">
             <SectionLabel>Services</SectionLabel>
             <div>
               {[
@@ -402,7 +448,7 @@ export default function Home() {
           </section>
 
           {/* ── SKILLS ── */}
-          <section id="skills" className="mb-20 scroll-mt-8">
+          <section id="skills" className="mb-20 scroll-mt-28 md:scroll-mt-8">
             <SectionLabel>Skills & Tools</SectionLabel>
             <div className="space-y-6">
               {[
@@ -445,7 +491,7 @@ export default function Home() {
           </section>
 
           {/* ── WORK SAMPLES ── */}
-          <section id="samples" className="mb-20 scroll-mt-8">
+          <section id="samples" className="mb-20 scroll-mt-28 md:scroll-mt-8">
             <SectionLabel>Work Samples</SectionLabel>
             <div className="grid sm:grid-cols-2 gap-4">
               {[
@@ -510,7 +556,7 @@ export default function Home() {
           </section>
 
           {/* ── CONTACT ── */}
-          <section id="contact" className="mb-20 scroll-mt-8">
+          <section id="contact" className="mb-20 scroll-mt-28 md:scroll-mt-8">
             <SectionLabel>Contact</SectionLabel>
             <div className="grid md:grid-cols-2 gap-12">
               <FadeIn>
