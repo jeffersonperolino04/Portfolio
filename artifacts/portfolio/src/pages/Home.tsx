@@ -304,10 +304,10 @@ export default function Home() {
         {showCompactHeader && (
           <motion.div
             className="fixed top-0 left-0 right-0 z-50 md:hidden bg-background/97 backdrop-blur-md border-b border-border"
-            initial={{ y: "-100%" }}
-            animate={{ y: 0 }}
-            exit={{ y: "-100%" }}
-            transition={{ duration: 0.28, ease: "easeOut" }}
+            initial={{ y: -24, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: -24, opacity: 0 }}
+            transition={{ duration: 0.55, ease: [0.25, 0.46, 0.45, 0.94] }}
           >
             {/* Identity row */}
             <div
