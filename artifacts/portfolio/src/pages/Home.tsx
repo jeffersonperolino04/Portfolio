@@ -217,7 +217,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* ── MOBILE HERO (full-screen intro, hidden on md+) ── */}
-        <div className="md:hidden min-h-screen flex flex-col items-center justify-start text-center px-[6vw] pt-[12vw] pb-[4vw] relative">
+          <div className="md:hidden flex flex-col items-center justify-start text-center px-[6vw] pt-[12vw] pb-[10vw] relative">
         <img
           src={jpPhoto}
           alt="Jefferson Perolino"
